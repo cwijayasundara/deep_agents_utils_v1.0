@@ -10,8 +10,10 @@ API_KEY = "test-key"
 
 
 def client(handler, **kwargs) -> DecisionsClient:
+    # Same mock for both pools: async must never reach the real network.
+    mock = httpx.MockTransport(handler)
     return DecisionsClient(
-        api_key=API_KEY, transport=httpx.MockTransport(handler), **kwargs
+        api_key=API_KEY, transport=mock, async_transport=mock, **kwargs
     )
 
 
