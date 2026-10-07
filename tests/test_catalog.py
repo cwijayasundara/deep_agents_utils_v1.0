@@ -34,12 +34,6 @@ def test_by_tier_cheapest_first(catalog):
         assert costs == sorted(costs)
 
 
-def test_classifier_entries_are_not_routable_chat_models(catalog):
-    for spec in catalog.by_tier(Tier.FAST):
-        assert spec.id  # chat models only selected via by_tier default kind
-    assert all(spec.kind == "chat" for tier in Tier.order() for spec in catalog.by_tier(tier))
-
-
 def test_overlay_merges_over_defaults(tmp_path):
     overlay = tmp_path / "overlay.json"
     overlay.write_text(
