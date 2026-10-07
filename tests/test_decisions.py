@@ -214,3 +214,51 @@ def test_breaker_half_open_after_cooldown():
     with pytest.raises(SelectorUnavailable):  # half-open: one probe allowed
         c.post(classify_payload("t", model="m"))
     assert c.breaker_open is True  # probe failed -> open again
+
+
+# --------------------------------------------------------------------------
+# Async parity (apost shares retry + breaker)
+# --------------------------------------------------------------------------
+
+
+def test_async_post_success_and_retry():
+    import asyncio
+
+    calls = []
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        calls.append(1)
+        if len(calls) < 2:
+            return httpx.Response(503, text="overloaded")
+        return httpx.Response(200, json=classify_answer())
+
+    c = client(handler, retry_backoff_s=0.0)
+    data = asyncio.run(c.apost(classify_payload("t", model="m")))
+    assert data["answers"][0]["choice"] == "fast"
+    assert len(calls) == 2
+
+
+def test_async_post_failure_maps_to_unavailable():
+    import asyncio
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(401, text="bad key")
+
+    c = client(handler)
+    with pytest.raises(SelectorUnavailable):
+        asyncio.run(c.apost(classify_payload("t", model="m")))
+
+
+def test_async_breaker_shared_with_sync():
+    import asyncio
+
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(500, text="down")
+
+    c = client(handler, retry_backoff_s=0.0, retry_attempts=0,
+               breaker_consecutive_failures=1, breaker_cooldown_s=60)
+    with pytest.raises(SelectorUnavailable):
+        asyncio.run(c.apost(classify_payload("t", model="m")))
+    assert c.breaker_open is True
+    with pytest.raises(SelectorUnavailable):  # sync path blocked by async failure
+        c.post(classify_payload("t", model="m"))
