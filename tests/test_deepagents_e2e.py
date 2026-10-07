@@ -11,7 +11,7 @@ from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 
-from decision_harness import ModelCatalog, ToolSelection
+from decision_harness import ModelCatalog
 from decision_harness.decisions import DecisionsClient
 from decision_harness.middleware.model_selection import ModelSelectionMiddleware
 from decision_harness.middleware.tool_selection import ToolSelectionMiddleware

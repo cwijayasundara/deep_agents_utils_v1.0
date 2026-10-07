@@ -16,8 +16,9 @@ import asyncio
 import os
 import random
 import time
-from dataclasses import dataclass, field
-from typing import Any, Callable
+from collections.abc import Callable
+from dataclasses import dataclass
+from typing import Any
 
 import httpx
 
@@ -68,7 +69,11 @@ COMPLEXITY_LEVELS = [
 
 
 def classify_payload(task: str, *, model: str = _DEFAULT_MODEL, zero_data_retention: bool = False) -> dict[str, Any]:
-    """One request, three questions: tier choice, complexity score, planning predicate."""
+    """One request, three questions: tier choice, complexity score, planning predicate.
+
+    ``zero_data_retention`` is accepted for interface parity: the Decisions API
+    supports ZDR server-side for eligible customers - nothing extra is sent.
+    """
     payload: dict[str, Any] = {
         "model": model,
         "input": task,
@@ -100,14 +105,12 @@ def classify_payload(task: str, *, model: str = _DEFAULT_MODEL, zero_data_retent
                     "Does this task require up-front planning, investigation, or sequencing "
                     "before code can be changed safely? "
                     "true - the task is ambiguous, cross-system, risky, or needs sequencing and tradeoffs. "
-                    f"false - the requested change and verification path are already obvious and contained. "
+                    "false - the requested change and verification path are already obvious and contained. "
                     + INJECTION_GUARD
                 ),
             },
         ],
     }
-    if zero_data_retention:
-        payload["providerOptions"] = {"decisions": {"zero_data_retention": True, "disallow_prompt_training": True}}
     return payload
 
 
@@ -116,7 +119,7 @@ def tool_selection_payload(
     tools: list[tuple[str, str]],
     *,
     model: str = _DEFAULT_MODEL,
-    zero_data_retention: bool = False,
+    zero_data_retention: bool = False,  # supported server-side; nothing sent
 ) -> dict[str, Any]:
     """One request, one predicate question per tool."""
     payload: dict[str, Any] = {
@@ -136,8 +139,6 @@ def tool_selection_payload(
             for name, desc in tools
         ],
     }
-    if zero_data_retention:
-        payload["providerOptions"] = {"decisions": {"zero_data_retention": True, "disallow_prompt_training": True}}
     return payload
 
 

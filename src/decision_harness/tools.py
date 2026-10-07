@@ -8,10 +8,10 @@ middleware owns degradation ("keep all tools").
 from __future__ import annotations
 
 import time
-from typing import Any, Literal
+from typing import Literal
 
 from .decisions import DecisionsClient, tool_selection_payload
-from .errors import ConfigError, SelectorUnavailable
+from .errors import ConfigError
 from .types import ToolSelection
 
 _ON_NONE = ("all", "none", "top1")

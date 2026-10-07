@@ -13,7 +13,12 @@ keywords = ["llm", "agent", "model-routing", "tool-selection", "decisions-api", 
 dependencies = ["httpx>=0.27"]
 
 [project.optional-dependencies]
-deepagents = ["deepagents>=0.7.22"]
+deepagents = [
+    "deepagents>=0.7.22",
+    "langchain-openai>=1.0",        # openai + OpenAI-compatible vendors (fireworks/baseten/openrouter)
+    "langchain-anthropic>=1.0",
+    "langchain-google-genai>=4.4",
+]
 dev = ["pytest>=8", "ruff>=0.6"]
 
 [tool.hatch.build.targets.wheel]

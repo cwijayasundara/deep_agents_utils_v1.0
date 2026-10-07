@@ -15,16 +15,16 @@ class Tier(str, Enum):
     PERFORMANCE = "performance"
 
     @classmethod
-    def order(cls) -> tuple["Tier", ...]:
+    def order(cls) -> tuple[Tier, ...]:
         return (cls.FAST, cls.BALANCED, cls.PERFORMANCE)
 
     @classmethod
-    def next(cls, tier: "Tier") -> "Tier":
+    def next(cls, tier: Tier) -> Tier:
         tiers = cls.order()
         return tiers[min(tiers.index(tier) + 1, len(tiers) - 1)]
 
     @classmethod
-    def strongest(cls, a: "Tier", b: "Tier") -> "Tier":
+    def strongest(cls, a: Tier, b: Tier) -> Tier:
         return a if cls.order().index(a) >= cls.order().index(b) else b
 
 

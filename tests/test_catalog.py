@@ -2,7 +2,7 @@
 
 import pytest
 
-from decision_harness import ConfigError, ModelCatalog, ModelSpec, Tier
+from decision_harness import ConfigError, ModelCatalog, Tier
 
 
 @pytest.fixture

@@ -1,7 +1,6 @@
 """ModelSelector: one Decisions request -> RouteDecision, with cache + fallback."""
 
 import httpx
-import pytest
 
 from decision_harness import ModelCatalog, Tier
 from decision_harness.decisions import DecisionsClient
@@ -61,7 +60,7 @@ def test_cache_hit_skips_the_round_trip():
 
 
 def test_falls_back_to_heuristic_when_decisions_down():
-    selector, calls = make_selector(lambda r: httpx.Response(500, text="down"), retry_attempts=0)
+    selector, _calls = make_selector(lambda r: httpx.Response(500, text="down"), retry_attempts=0)
     d = selector.select(TASK)
     assert d.model.tier in Tier.order()  # still routed
     assert any("fallback" in e for e in d.events)

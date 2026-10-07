@@ -9,8 +9,8 @@ from __future__ import annotations
 
 import time
 from collections import OrderedDict
+from collections.abc import Callable
 from dataclasses import replace
-from typing import Callable
 
 from .catalog import ModelCatalog
 from .decisions import DecisionsClient, classify_payload
@@ -49,7 +49,7 @@ class ModelSelector:
         decision = self.policy.decide(classification, self.catalog, reason="user")
         if classification.raw.get("classifier_fallback"):
             decision.events.append(
-                f"classifier fallback: decisions unavailable, degraded to heuristic"
+                "classifier fallback: decisions unavailable, degraded to heuristic"
             )
         if self.on_decision:
             self.on_decision(decision)
@@ -64,7 +64,7 @@ class ModelSelector:
             return replace(cached, classifier="cache:hit")
         try:
             classification = self._classify_via_decisions(task)
-        except Exception:  # SelectorUnavailable is the expected shape; degrade regardless
+        except Exception:  # noqa: BLE001 - degrade regardless of failure shape
             classification = self._fallback.classify(task)
             classification.raw = {**classification.raw, "classifier_fallback": "decisions"}
         self._remember(task, classification)
@@ -80,7 +80,7 @@ class ModelSelector:
             data = await self.client.apost(classify_payload(task, zero_data_retention=self.client.zero_data_retention))
             flat = self.client._parse_classify(data)
             classification = self._to_classification(flat, started)
-        except Exception:
+        except Exception:  # noqa: BLE001 - degrade regardless of failure shape
             classification = self._fallback.classify(task)
             classification.raw = {**classification.raw, "classifier_fallback": "decisions"}
         self._remember(task, classification)

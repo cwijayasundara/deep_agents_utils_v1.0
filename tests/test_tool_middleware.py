@@ -10,7 +10,6 @@ from langchain.agents.middleware.types import ExtendedModelResponse, ModelReques
 from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 from langchain_core.tools import tool
-from langgraph.types import Command
 
 from decision_harness.errors import SelectorUnavailable
 from decision_harness.middleware.tool_selection import ToolSelectionMiddleware
@@ -157,5 +156,5 @@ def test_async_matches_sync():
         captured["tools"] = list(request.tools)
         return ModelResponse(result=[AIMessage("ok")])
 
-    out = asyncio.run(mw.awrap_model_call(_request(), ahandler))
+    asyncio.run(mw.awrap_model_call(_request(), ahandler))
     assert [t.name for t in captured["tools"]] == ["read_file"]

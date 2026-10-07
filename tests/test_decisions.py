@@ -3,7 +3,11 @@
 import httpx
 import pytest
 
-from decision_harness.decisions import CLASSIFY_QUESTIONS, DecisionsClient, classify_payload, tool_selection_payload
+from decision_harness.decisions import (
+    DecisionsClient,
+    classify_payload,
+    tool_selection_payload,
+)
 from decision_harness.errors import SelectorUnavailable
 
 API_KEY = "test-key"
@@ -45,9 +49,11 @@ def test_tool_selection_payload_one_predicate_per_tool():
     assert all("Read a file" in q["instructions"] for q in body["questions"] if q["name"] == "read_file")
 
 
-def test_zdr_flags_sent_when_enabled():
+def test_no_gateway_only_parameters_sent():
+    # The OpenAI Decisions API rejects unknown parameters (live-verified:
+    # 'providerOptions' is a Vercel-gateway parameter, not OpenAI's).
     body = classify_payload("t", model="m", zero_data_retention=True)
-    assert body.get("providerOptions", {}).get("decisions", {}).get("zero_data_retention") is True
+    assert "providerOptions" not in body
 
 
 # --------------------------------------------------------------------------

@@ -9,8 +9,9 @@ overlay your own file: `ModelCatalog.load(path="my_catalog.json")`.
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from .errors import ConfigError
 from .types import ModelSpec, Tier
@@ -64,13 +65,13 @@ class ModelCatalog:
             self.register(_spec_from_dict(entry))
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ModelCatalog":
+    def from_dict(cls, data: dict[str, Any]) -> ModelCatalog:
         catalog = cls()
         catalog.add_dict(data)
         return catalog
 
     @classmethod
-    def load(cls, path: str | Path | None = None, merge_defaults: bool = True) -> "ModelCatalog":
+    def load(cls, path: str | Path | None = None, merge_defaults: bool = True) -> ModelCatalog:
         """Defaults merged with an optional user overlay (overlay wins)."""
         catalog = cls()
         if merge_defaults:

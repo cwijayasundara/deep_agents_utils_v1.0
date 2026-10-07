@@ -13,7 +13,7 @@ from langchain_core.language_models.fake_chat_models import GenericFakeChatModel
 from langchain_core.messages import AIMessage, HumanMessage
 from langgraph.checkpoint.memory import InMemorySaver
 
-from decision_harness import ModelCatalog, ModelSpec, Tier
+from decision_harness import ModelCatalog, Tier
 from decision_harness.middleware.model_selection import ModelSelectionMiddleware
 from decision_harness.selector import ModelSelector
 
@@ -65,7 +65,8 @@ def make_mw(tier="fast", conf=0.9, models=None, **client_kwargs):
 
 
 import httpx
-from decision_harness.decisions import DecisionsClient  # noqa: E402
+
+from decision_harness.decisions import DecisionsClient
 
 
 def _request(model, state=None):
@@ -109,9 +110,9 @@ def test_spec_to_chat_model_openai_compat_vendors_get_base_url(monkeypatch):
         "decision_harness.middleware.model_selection.init_chat_model",
         lambda *a, **k: captured.update(kwargs=k) or object(),
     )
-    from decision_harness.middleware.model_selection import spec_to_chat_model
-
     import os
+
+    from decision_harness.middleware.model_selection import spec_to_chat_model
 
     os.environ["FIREWORKS_API_KEY"] = "fw-test"
     try:
