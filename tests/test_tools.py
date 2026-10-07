@@ -88,7 +88,9 @@ def test_on_none_top1_and_none():
 
 
 def test_unknown_tool_answers_are_ignored():
-    sel = make_selector(canned({"read_file": 0.9, "ghost": 0.99}))
+    probs = {t[0]: 0.9 for t in TOOLS}
+    probs["ghost"] = 0.99  # extra answer for a tool we didn't ask about
+    sel = make_selector(canned(probs))
     s = sel.select("t", TOOLS)
     assert "ghost" not in s.selected
     assert "ghost" not in s.probabilities
