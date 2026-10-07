@@ -16,6 +16,12 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
-      - run: pip install ".[dev,deepagents]" && pip install -U .
-      - run: pytest -q
+      # deepagents requires Python >=3.11: on 3.10 run the offline core suite
+      # only (langchain-dependent tests auto-skip via importorskip).
+      - run: >
+          if [ "${{ matrix.python-version }}" = "3.10" ]; then
+            pip install ".[dev]" && pip install -U . && pytest -q;
+          else
+            pip install ".[dev,deepagents]" && pip install -U . && pytest -q;
+          fi
       - run: ruff check src tests examples
