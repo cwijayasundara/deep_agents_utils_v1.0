@@ -61,7 +61,7 @@ class ModelSelector:
         cached = self._cache.get(task)
         if cached is not None:
             self._cache.move_to_end(task)
-            return replace(cached, classifier="cache")
+            return replace(cached, classifier="cache:hit")
         try:
             classification = self._classify_via_decisions(task)
         except Exception:  # SelectorUnavailable is the expected shape; degrade regardless
@@ -74,7 +74,7 @@ class ModelSelector:
         cached = self._cache.get(task)
         if cached is not None:
             self._cache.move_to_end(task)
-            return replace(cached, classifier="cache")
+            return replace(cached, classifier="cache:hit")
         try:
             started = time.perf_counter()
             data = await self.client.apost(classify_payload(task, zero_data_retention=self.client.zero_data_retention))

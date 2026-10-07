@@ -53,9 +53,17 @@ def test_retry_escalates_one_tier(catalog):
     assert d.model.tier == Tier.BALANCED
 
 
-def test_capability_shortfall_escalates_tier(catalog):
+def test_capability_shortfall_picks_capable_model_in_tier(catalog):
+    # With several providers per tier, shortfall means "pick the capable one"
+    # in the same tier first (GLM lacks vision; gemini/haiku have it).
     d = EscalationPolicy().decide(make_cls(caps=frozenset({"vision"})), catalog)
-    assert d.model.tier != Tier.FAST
+    assert d.model.supports("vision")
+
+
+def test_capability_shortfall_escalates_when_tier_cannot(catalog):
+    # A capability no model in the tier has must escalate the tier.
+    d = EscalationPolicy().decide(make_cls(caps=frozenset({"audio"})), catalog)
+    assert d.model.tier != Tier.FAST or d.model.supports("audio")
 
 
 def test_huge_context_falls_back_to_strongest(catalog):
