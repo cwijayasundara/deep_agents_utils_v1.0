@@ -259,25 +259,21 @@ class DecisionsClient:
             try:
                 resp = await self._async.post(self._path, json=payload)
             except httpx.HTTPError as e:
-                return self._afail(f"decisions request failed: {e}")
+                self._fail(f"decisions request failed: {e}")
             if resp.status_code < 400:
                 self.breaker.record_success()
                 return self._parse(resp)
             if resp.status_code in {429} or resp.status_code >= 500:
                 attempt += 1
                 if attempt > self._retry.attempts:
-                    return self._afail(f"decisions http {resp.status_code}: {resp.text[:200]}", retryable=True)
+                    self._fail(f"decisions http {resp.status_code}: {resp.text[:200]}", retryable=True)
                 await asyncio.sleep(self._sleep_for(resp))
                 continue
-            return self._afail(f"decisions http {resp.status_code}: {resp.text[:200]}")
+            self._fail(f"decisions http {resp.status_code}: {resp.text[:200]}")
 
     # -- failure plumbing -------------------------------------------------------
 
     def _fail(self, message: str, retryable: bool = True) -> None:
-        self.breaker.record_failure()
-        raise SelectorUnavailable(message, retryable=retryable)
-
-    async def _afail(self, message: str, retryable: bool = True) -> None:
         self.breaker.record_failure()
         raise SelectorUnavailable(message, retryable=retryable)
 
