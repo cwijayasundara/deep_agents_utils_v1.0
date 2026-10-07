@@ -18,7 +18,7 @@ from decision_harness.middleware.tool_selection import ToolSelectionMiddleware
 from decision_harness.selector import ModelSelector
 from decision_harness.tools import ToolSelector
 
-FAST = ModelCatalog.load().require("accounts/fireworks/models/glm-5p3-flash")
+FAST = ModelCatalog.load().require("accounts/fireworks/routers/glm-5p3-fast")
 
 
 def classify_body(tier="fast", conf=0.9, complexity=0.2, planning=0.1):

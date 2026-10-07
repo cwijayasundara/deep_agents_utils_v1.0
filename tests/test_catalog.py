@@ -17,7 +17,7 @@ def test_defaults_have_all_three_tiers(catalog):
 
 
 def test_primary_tier_models_from_the_blog(catalog):
-    assert catalog.require("accounts/fireworks/models/glm-5p3-flash").tier == Tier.FAST
+    assert catalog.require("accounts/fireworks/routers/glm-5p3-fast").tier == Tier.FAST
     assert catalog.require("gpt-6.1-sol").tier == Tier.BALANCED
     assert catalog.require("gpt-6-astra").tier == Tier.PERFORMANCE
 

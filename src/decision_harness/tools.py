@@ -24,11 +24,14 @@ class ToolSelector:
         client: DecisionsClient | None = None,
         threshold: float = 0.5,
         backend: str | None = None,  # reserved; Decisions API is the only backend
+        offline: bool = False,
     ) -> None:
         if backend is not None and backend != "decisions":
             raise ConfigError(f"unknown tool-selector backend {backend!r}; only 'decisions' is supported")
+        self.offline = offline
         if client is None:
             client = DecisionsClient()
+        # `offline=True` skips the wire entirely: keep-all-tools, zero latency.
         self.client = client
         self.threshold = float(threshold)
 
@@ -41,6 +44,8 @@ class ToolSelector:
         always_include: list[str] | None = None,
         on_none: Literal["all", "none", "top1"] = "all",
     ) -> ToolSelection:
+        if self.offline:
+            return self._decide({t[0]: 1.0 for t in tools}, tools, max_tools, always_include, on_none)
         return self._decide(self._select_via_decisions(task, tools), tools, max_tools, always_include, on_none)
 
     async def aselect(
@@ -52,6 +57,8 @@ class ToolSelector:
         always_include: list[str] | None = None,
         on_none: Literal["all", "none", "top1"] = "all",
     ) -> ToolSelection:
+        if self.offline:
+            return self._decide({t[0]: 1.0 for t in tools}, tools, max_tools, always_include, on_none)
         return self._decide(
             await self._aselect_via_decisions(task, tools), tools, max_tools, always_include, on_none
         )

@@ -17,7 +17,7 @@ from decision_harness import ModelCatalog, Tier
 from decision_harness.middleware.model_selection import ModelSelectionMiddleware
 from decision_harness.selector import ModelSelector
 
-FAST = ModelCatalog.load().require("accounts/fireworks/models/glm-5p3-flash")
+FAST = ModelCatalog.load().require("accounts/fireworks/routers/glm-5p3-fast")
 
 
 def classify_body(tier="fast", conf=0.9, complexity=0.2, planning=0.1):
@@ -122,7 +122,7 @@ def test_spec_to_chat_model_openai_compat_vendors_get_base_url(monkeypatch):
     assert captured["kwargs"]["model_provider"] == "openai"
     assert captured["kwargs"]["base_url"] == "https://api.fireworks.ai/inference/v1"
     assert captured["kwargs"]["api_key"] == "fw-test"
-    assert captured["kwargs"]["reasoning_effort"] == "xhigh"
+    assert captured["kwargs"]["reasoning_effort"] == FAST.reasoning_effort
 
 
 # --------------------------------------------------------------------------

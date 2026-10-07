@@ -39,7 +39,7 @@ def test_select_returns_routed_decision():
     selector, calls = make_selector(lambda r: httpx.Response(200, json=classify_body(tier="fast", conf=0.9)))
     d = selector.select(TASK)
     assert d.model.tier == Tier.FAST
-    assert d.model.label() == "fireworks/accounts/fireworks/models/glm-5p3-flash"
+    assert d.model.label() == "fireworks/accounts/fireworks/routers/glm-5p3-fast"
     assert d.classification.classifier.startswith("decisions:")
     assert d.classification.latency_ms >= 0
     assert len(calls) == 1

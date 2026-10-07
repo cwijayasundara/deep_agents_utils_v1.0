@@ -5,21 +5,21 @@
   },
   "models": [
     {
-      "id": "accounts/fireworks/models/glm-5p3-flash",
+      "id": "accounts/fireworks/routers/glm-5p3-fast",
       "provider": "fireworks",
       "tier": "fast",
       "chat_provider": "openai",
       "base_url": "https://api.fireworks.ai/inference/v1",
       "api_key_env": "FIREWORKS_API_KEY",
-      "reasoning_effort": "xhigh",
+      "reasoning_effort": "low",
       "input_price": 0.05,
       "output_price": 0.2,
       "context_window": 200000,
       "max_output_tokens": 32768,
       "capabilities": ["tools", "json"],
       "intelligence": 7.6,
-      "aliases": ["glm-5.3-flash"],
-      "notes": "Primary fast tier (blog post)."
+      "aliases": ["glm-5.3-flash", "glm-5p3-flash"],
+      "notes": "Primary fast tier (blog post); switched to the -fast router, ~40% lower latency than glm-5p3-flash."
     },
     {
       "id": "gpt-6.1-sol",
@@ -93,7 +93,7 @@
     },
 
     {
-      "id": "gemini-5-flash",
+      "id": "gemini-3.1-flash-lite",
       "provider": "google",
       "tier": "fast",
       "chat_provider": "google_genai",
@@ -106,7 +106,7 @@
       "notes": "PLACEHOLDER pricing. Google fast alternate."
     },
     {
-      "id": "gemini-5-pro",
+      "id": "gemini-3-flash-preview",
       "provider": "google",
       "tier": "balanced",
       "chat_provider": "google_genai",
@@ -119,7 +119,7 @@
       "notes": "PLACEHOLDER pricing. Google balanced alternate."
     },
     {
-      "id": "gemini-5-ultra",
+      "id": "gemini-3.1-pro-preview",
       "provider": "google",
       "tier": "performance",
       "chat_provider": "google_genai",
@@ -133,13 +133,13 @@
     },
 
     {
-      "id": "glm-5p3-flash",
+      "id": "zai-org/GLM-5.3-Flash",
       "provider": "baseten",
       "tier": "fast",
       "chat_provider": "openai",
       "base_url": "https://inference.baseten.co/v1",
       "api_key_env": "BASETEN_API_KEY",
-      "reasoning_effort": "xhigh",
+      "reasoning_effort": "low",
       "input_price": 0.06,
       "output_price": 0.24,
       "context_window": 200000,
@@ -148,7 +148,7 @@
       "notes": "PLACEHOLDER pricing. BaseTen fast alternate (OpenAI-compatible)."
     },
     {
-      "id": "gpt-6.1-sol",
+      "id": "zai-org/GLM-5.3",
       "provider": "baseten",
       "tier": "balanced",
       "chat_provider": "openai",
@@ -164,13 +164,13 @@
     },
 
     {
-      "id": "glm-5p3-flash",
+      "id": "z-ai/glm-5.3-prime",
       "provider": "openrouter",
       "tier": "fast",
       "chat_provider": "openai",
       "base_url": "https://openrouter.ai/api/v1",
       "api_key_env": "OPENROUTER_API_KEY",
-      "reasoning_effort": "xhigh",
+      "reasoning_effort": "low",
       "input_price": 0.06,
       "output_price": 0.24,
       "context_window": 200000,
@@ -179,7 +179,7 @@
       "notes": "PLACEHOLDER pricing. OpenRouter fast alternate (OpenAI-compatible)."
     },
     {
-      "id": "gpt-6.1-sol",
+      "id": "openai/gpt-6.1-sol",
       "provider": "openrouter",
       "tier": "balanced",
       "chat_provider": "openai",
@@ -194,7 +194,7 @@
       "notes": "PLACEHOLDER pricing. OpenRouter balanced alternate (OpenAI-compatible)."
     },
     {
-      "id": "gpt-6-astra",
+      "id": "openai/gpt-6.1-sol-pro",
       "provider": "openrouter",
       "tier": "performance",
       "chat_provider": "openai",

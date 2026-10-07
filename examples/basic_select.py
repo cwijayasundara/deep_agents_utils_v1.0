@@ -10,6 +10,10 @@ from __future__ import annotations
 
 import sys
 
+from dotenv import load_dotenv
+
+load_dotenv()  # pick up API keys from the repo-root .env
+
 from decision_harness import DecisionsClient, ModelCatalog, ModelSelector
 
 

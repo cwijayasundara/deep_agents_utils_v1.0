@@ -23,12 +23,13 @@ class ModelSelector:
     def __init__(
         self,
         *,
-        client: DecisionsClient,
+        client: DecisionsClient | None = None,
         catalog: ModelCatalog | None = None,
         policy: EscalationPolicy | None = None,
         cache_size: int = 256,
         on_decision: Callable[[object], None] | None = None,
     ) -> None:
+        """`client=None` runs fully offline: the heuristic classifier only."""
         self.client = client
         self.catalog = catalog if catalog is not None else ModelCatalog.load()
         self.policy = policy if policy is not None else EscalationPolicy()
@@ -62,11 +63,14 @@ class ModelSelector:
         if cached is not None:
             self._cache.move_to_end(task)
             return replace(cached, classifier="cache:hit")
-        try:
-            classification = self._classify_via_decisions(task)
-        except Exception:  # noqa: BLE001 - degrade regardless of failure shape
+        if self.client is None:
             classification = self._fallback.classify(task)
-            classification.raw = {**classification.raw, "classifier_fallback": "decisions"}
+        else:
+            try:
+                classification = self._classify_via_decisions(task)
+            except Exception:  # noqa: BLE001 - degrade regardless of failure shape
+                classification = self._fallback.classify(task)
+                classification.raw = {**classification.raw, "classifier_fallback": "decisions"}
         self._remember(task, classification)
         return classification
 
@@ -75,14 +79,17 @@ class ModelSelector:
         if cached is not None:
             self._cache.move_to_end(task)
             return replace(cached, classifier="cache:hit")
-        try:
-            started = time.perf_counter()
-            data = await self.client.apost(classify_payload(task, zero_data_retention=self.client.zero_data_retention))
-            flat = self.client._parse_classify(data)
-            classification = self._to_classification(flat, started)
-        except Exception:  # noqa: BLE001 - degrade regardless of failure shape
+        if self.client is None:
             classification = self._fallback.classify(task)
-            classification.raw = {**classification.raw, "classifier_fallback": "decisions"}
+        else:
+            try:
+                started = time.perf_counter()
+                data = await self.client.apost(classify_payload(task, zero_data_retention=self.client.zero_data_retention))
+                flat = self.client._parse_classify(data)
+                classification = self._to_classification(flat, started)
+            except Exception:  # noqa: BLE001 - degrade regardless of failure shape
+                classification = self._fallback.classify(task)
+                classification.raw = {**classification.raw, "classifier_fallback": "decisions"}
         self._remember(task, classification)
         return classification
 
