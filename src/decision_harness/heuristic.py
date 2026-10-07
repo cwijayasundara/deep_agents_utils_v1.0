@@ -44,9 +44,9 @@ class OfflineFallbackClassifier:
         balanced = sum(1 for s in _BALANCED_SIGNALS if s in text)
         performance = sum(1 for s in _PERFORMANCE_SIGNALS if s in text)
 
-        if performance > 0 or (performance >= balanced and performance >= fast and performance > 0):
+        if performance > 0 and performance >= max(fast, balanced):
             tier, confidence = Tier.PERFORMANCE, 0.75
-        elif fast > balanced:
+        elif fast >= balanced:  # ties break toward the cheaper tier
             tier, confidence = Tier.FAST, 0.75
         elif balanced > 0:
             tier, confidence = Tier.BALANCED, 0.65
