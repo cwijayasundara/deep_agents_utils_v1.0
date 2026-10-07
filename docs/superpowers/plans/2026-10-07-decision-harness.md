@@ -1,6 +1,6 @@
 # decision_harness Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans (inline) to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans (inline) to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Production framework library (`decision_harness`) that puts OpenAI Decisions API-backed model selection and tool selection inside agent harnesses as LangChain middleware.
 
@@ -45,66 +45,66 @@ Reference code lives at `/Users/chamindawijayasundara/Documents/learning_101/mod
 ## Tasks
 
 ### Task 1 — Scaffold + types + errors
-- [ ] Write `tests/test_types.py`: Tier ordering (next/strongest), ModelSpec.label/cost/supports, SelectorUnavailable retryable flag
-- [ ] RED: run, verify failure
-- [ ] GREEN: `pyproject.toml`, `src/decision_harness/{__init__ (minimal),errors.py,types.py,py.typed}`, `.gitignore`, `conftest.py` (src/ first on sys.path)
-- [ ] Run tests, commit
+- [x] Write `tests/test_types.py`: Tier ordering (next/strongest), ModelSpec.label/cost/supports, SelectorUnavailable retryable flag
+- [x] RED: run, verify failure
+- [x] GREEN: `pyproject.toml`, `src/decision_harness/{__init__ (minimal),errors.py,types.py,py.typed}`, `.gitignore`, `conftest.py` (src/ first on sys.path)
+- [x] Run tests, commit
 
 ### Task 2 — Catalog
-- [ ] Write `tests/test_catalog.py` (port from model_router tests/test_catalog.py): load defaults, merge overlay, by_tier cheapest-first, require/ConfigError, six providers present
-- [ ] RED
-- [ ] GREEN: `catalog.py` + `data/default_catalog.json` (three tier models + per-provider alternates, PLACEHOLDER prices)
-- [ ] Run, commit
+- [x] Write `tests/test_catalog.py` (port from model_router tests/test_catalog.py): load defaults, merge overlay, by_tier cheapest-first, require/ConfigError, six providers present
+- [x] RED
+- [x] GREEN: `catalog.py` + `data/default_catalog.json` (three tier models + per-provider alternates, PLACEHOLDER prices)
+- [x] Run, commit
 
 ### Task 3 — Heuristic fallback + ledger
-- [ ] Write `tests/test_heuristic.py` (port HeuristicClassifier tests) and `tests/test_ledger.py` (port CostLedger tests)
-- [ ] RED
-- [ ] GREEN: `heuristic.py`, `ledger.py`
-- [ ] Run, commit
+- [x] Write `tests/test_heuristic.py` (port HeuristicClassifier tests) and `tests/test_ledger.py` (port CostLedger tests)
+- [x] RED
+- [x] GREEN: `heuristic.py`, `ledger.py`
+- [x] Run, commit
 
 ### Task 4 — DecisionsClient (sync)
-- [ ] Write `tests/test_decisions.py`: classify payload (choice+score+predicate, guard, ZDR), select_tools payload (N predicates), response parsing (both question sets), refusal → SelectorUnavailable, malformed → SelectorUnavailable, retry on 429/5xx honoring Retry-After, no retry on 4xx, timeout → SelectorUnavailable
-- [ ] RED
-- [ ] GREEN: `decisions.py` sync half (payload builders, parse, retry loop, BreakerConfig dataclass)
-- [ ] Run, commit
+- [x] Write `tests/test_decisions.py`: classify payload (choice+score+predicate, guard, ZDR), select_tools payload (N predicates), response parsing (both question sets), refusal → SelectorUnavailable, malformed → SelectorUnavailable, retry on 429/5xx honoring Retry-After, no retry on 4xx, timeout → SelectorUnavailable
+- [x] RED
+- [x] GREEN: `decisions.py` sync half (payload builders, parse, retry loop, BreakerConfig dataclass)
+- [x] Run, commit
 
 ### Task 5 — DecisionsClient (async + circuit breaker)
-- [ ] Write tests: `apost` parity; breaker: N consecutive failures → open (no network, SelectorUnavailable), cooldown expiry → half-open recovery, success resets
-- [ ] RED
-- [ ] GREEN: async half + breaker state machine (shared by sync/async)
-- [ ] Run, commit
+- [x] Write tests: `apost` parity; breaker: N consecutive failures → open (no network, SelectorUnavailable), cooldown expiry → half-open recovery, success resets
+- [x] RED
+- [x] GREEN: async half + breaker state machine (shared by sync/async)
+- [x] Run, commit
 
 ### Task 6 — ModelSelector + policy
-- [ ] Write `tests/test_policy.py` (port TierPolicy tests incl. mechanical-task rule + retry escalation) and `tests/test_selector.py`: one-request classify → RouteDecision, LRU cache hit (client called once), fallback to heuristic on SelectorUnavailable (event recorded), no fallback on programmer error
-- [ ] RED
-- [ ] GREEN: `policy.py`, `selector.py`
-- [ ] Run, commit
+- [x] Write `tests/test_policy.py` (port TierPolicy tests incl. mechanical-task rule + retry escalation) and `tests/test_selector.py`: one-request classify → RouteDecision, LRU cache hit (client called once), fallback to heuristic on SelectorUnavailable (event recorded), no fallback on programmer error
+- [x] RED
+- [x] GREEN: `policy.py`, `selector.py`
+- [x] Run, commit
 
 ### Task 7 — ToolSelector
-- [ ] Write `tests/test_tools.py` (port DecisionToolSelector tests to Decisions-only): payload, parse, threshold, max_tools, always_include, on_none all/top1/none, failure mapping
-- [ ] RED
-- [ ] GREEN: `tools.py`
-- [ ] Run, commit
+- [x] Write `tests/test_tools.py` (port DecisionToolSelector tests to Decisions-only): payload, parse, threshold, max_tools, always_include, on_none all/top1/none, failure mapping
+- [x] RED
+- [x] GREEN: `tools.py`
+- [x] Run, commit
 
 ### Task 8 — ModelSelectionMiddleware
-- [ ] Write `tests/test_model_middleware.py` (port from model_router tests/test_langchain_integration.py, adapted): spec→chat model mapping (fireworks/baseten/openrouter→openai-compat base_url; anthropic/google native; reasoning_effort pinning), first-call swap, sticky state, ledger with latency event, escalation on failure, async parity
-- [ ] RED
-- [ ] GREEN: `middleware/model_selection.py` (+ lazy langchain import shim)
-- [ ] Run, commit
+- [x] Write `tests/test_model_middleware.py` (port from model_router tests/test_langchain_integration.py, adapted): spec→chat model mapping (fireworks/baseten/openrouter→openai-compat base_url; anthropic/google native; reasoning_effort pinning), first-call swap, sticky state, ledger with latency event, escalation on failure, async parity
+- [x] RED
+- [x] GREEN: `middleware/model_selection.py` (+ lazy langchain import shim)
+- [x] Run, commit
 
 ### Task 9 — ToolSelectionMiddleware
-- [ ] Write `tests/test_tool_middleware.py`: per-call filter, sticky state, stale-cache re-select, degrade-to-all on SelectorUnavailable, no-tools/no-text passthrough, always_include/max_tools/on_none pass-through, async
-- [ ] RED
-- [ ] GREEN: `middleware/tool_selection.py`
-- [ ] Run, commit
+- [x] Write `tests/test_tool_middleware.py`: per-call filter, sticky state, stale-cache re-select, degrade-to-all on SelectorUnavailable, no-tools/no-text passthrough, always_include/max_tools/on_none pass-through, async
+- [x] RED
+- [x] GREEN: `middleware/tool_selection.py`
+- [x] Run, commit
 
 ### Task 10 — deepagents end-to-end (offline)
-- [ ] Write `tests/test_deepagents_e2e.py`: create_deep_agent + both middlewares + fake models + tmp workspace → routed model used, tools filtered, edit-and-test completes
-- [ ] RED
-- [ ] GREEN: fix whatever the integration surfaces
-- [ ] Run, commit
+- [x] Write `tests/test_deepagents_e2e.py`: create_deep_agent + both middlewares + fake models + tmp workspace → routed model used, tools filtered, edit-and-test completes
+- [x] RED
+- [x] GREEN: fix whatever the integration surfaces
+- [x] Run, commit
 
 ### Task 11 — Public API, examples, README, CI
-- [ ] `__init__.py` full exports; `examples/basic_select.py` (offline-selectable), `examples/deepagents_demo.py`
-- [ ] README (quickstart, catalog overlay, production checklist), LICENSE (MIT), `.github/workflows/ci.yml` (pytest 3.10/3.12/3.14 + ruff)
-- [ ] Full suite green + ruff clean; final commit
+- [x] `__init__.py` full exports; `examples/basic_select.py` (offline-selectable), `examples/deepagents_demo.py`
+- [x] README (quickstart, catalog overlay, production checklist), LICENSE (MIT), `.github/workflows/ci.yml` (pytest 3.10/3.12/3.14 + ruff)
+- [x] Full suite green + ruff clean; final commit
